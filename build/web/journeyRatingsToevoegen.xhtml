@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>JourneyRating Toevoegen</title>
+    </h:head>
+    <h:body>
+        <h3> JourneyRating toevoegen: </h3>
+            <h:form>
+                    <p:outputLabel for="rater" value="Rated by: " />
+                    <p:selectOneMenu id="rater" value="#{journeyRatingView.journeyRating.rater}" style="width:125px" converter="#{gebruikerConverter}">
+                        <f:selectItems value="#{gebruikerView.alleGebruikers}" var="user" itemValue="#{user}" itemLabel="#{user.username}" />
+                    </p:selectOneMenu>
+                    <br/>
+                    <p:outputLabel for="journey" value="For journey: " />
+                    <p:selectOneMenu id="journey" value="#{journeyRatingView.journeyRating.journey}" style="width:125px" converter="#{journeyConverter}">
+                        <f:selectItems value="#{journeyView.alleJourneys}" var="journey" itemValue="#{journey}" itemLabel="#{journey.name}" />
+                    </p:selectOneMenu>
+                    <br/>
+                    <h:selectOneRadio value="#{journeyRatingView.journeyRating.score}">
+                        <f:selectItem itemValue="0" itemLabel="0"/>
+                        <f:selectItem itemValue="1" itemLabel="1"/>
+                        <f:selectItem itemValue="2" itemLabel="2"/>
+                        <f:selectItem itemValue="3" itemLabel="3"/>
+                        <f:selectItem itemValue="4" itemLabel="4"/>
+                        <f:selectItem itemValue="5" itemLabel="5"/>
+                        <f:selectItem itemValue="6" itemLabel="6"/>
+                        <f:selectItem itemValue="7" itemLabel="7"/>
+                        <f:selectItem itemValue="8" itemLabel="8"/>
+                        <f:selectItem itemValue="9" itemLabel="9"/>
+                        <f:selectItem itemValue="10" itemLabel="10"/>
+
+                    </h:selectOneRadio>
+                <br/>
+                <h:commandButton
+                    action="#{journeyRatingView.maakNieuweJourneyRating}"
+                    value="voeg toe" />
+                
+                <input type="reset" value="Reset Form" />
+
+            </h:form>   
+
+    </h:body>
+</html>
+

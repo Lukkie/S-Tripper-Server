@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Core/Review.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Core/ToDo.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Servlets/AddUserRating.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Servlets/getJourneyFromUser.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Servlets/AddRating.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Core/JourneyRating.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/DAO/GebruikerFacade.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Servlets/GetFollowing.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Servlets/FindInteresses.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/web/index.xhtml</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Servlets/FindTodos.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Servlets/AddFollowing.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Servlets/newGebruiker.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Servlets/GetFollowers.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/web/WEB-INF/web.xml</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Servlets/AddTodo.java</file>
+            <file>file:/D:/Documenten/NetBeansProjects/Project_1/src/java/Core/Gebruiker.java</file>
+        </group>
+    </open-files>
+</project-private>

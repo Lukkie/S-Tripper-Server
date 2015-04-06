@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Voeg ToDo Toe</title>
+        <style type="text/css">
+                .container {
+                    width: 300px;
+                    clear: both;
+                }
+                .container input {
+                    width: 100%;
+                    clear: both;
+                }
+            </style>
+    </h:head>
+    <h:body>
+        <div class="container">
+            <h:form>
+                <h:outputLabel value="Titel To-Do: "/>
+                <h:inputText value="#{toDoView.toDo.title}"/>
+                <br/>
+                <h:outputLabel value="Beschrijving: "/>
+                <h:inputText value="#{toDoView.toDo.description}"/>
+                
+                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" columnClasses="label, value">
+                    <p:outputLabel for="interesses" value="Tags (Interesses):" />
+                    <p:selectManyMenu id="interesses" value="#{toDoView.toDo.tags}" converter="#{interesseConverter}"
+                                      var="interesse" showCheckbox="true">
+                        <f:selectItems value="#{interesseView.alleInteresses}" var="interesse" itemLabel="#{interesse.interesse}" itemValue="#{interesse}" />
+                        <p:column>
+                            <h:outputText value="#{interesse.interesse}" />
+                        </p:column>
+                    </p:selectManyMenu>
+                </h:panelGrid>
+				
+				<h:outputLabel value="Op locatie: "/>
+                <h:selectOneMenu value="#{toDoView.toDo.locatie}"  converter="#{locatieConverter}">
+                    <f:selectItems value="#{locatieView.alleLocaties}" var="locatie" itemValue="#{locatie}" itemLabel="#{locatie.naam}" />
+                </h:selectOneMenu>
+                
+                <!--locatie toevoegen?-->
+                <br/>
+                <h:commandButton
+                    action="#{toDoView.maakNieuweToDo()}"
+                    value="Maak ToDo aan" />
+            </h:form>
+        </div>
+    </h:body>
+</html>

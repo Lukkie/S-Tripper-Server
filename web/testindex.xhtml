@@ -1,0 +1,226 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"  
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Social Tripper</title>
+        <style type="text/css">
+            .container {
+            width: 300px;
+            clear: both;
+            }
+            .container input {
+            width: 100%;
+            clear: both;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <f:view>
+            <p:growl id="msgs" showDetail="true" />
+            <p:tabView>
+                <p:tab title="Gebruiker toevoegen">
+                    <f:view>
+                        <div class="container">
+                            <h:form>
+                                <p:outputLabel value="username: "/>
+                                <p:inputText value="#{gebruikerView.gebruiker.username}" />
+                                <br/>
+                                <p:outputLabel value="pasword: "/>
+                                <p:password id="nonFeedback" value="#{gebruikerView.gebruiker.paswoord}" />
+                                <br/>
+                                <p:outputLabel value="First Name: "/>
+                                <p:inputText value="#{gebruikerView.gebruiker.voornaam}"/>
+                                <br/>
+                                <p:outputLabel value="Last Name: "/>
+                                <p:inputText value="#{gebruikerView.gebruiker.achternaam}"/>
+                                <br/>
+                                <p:outputLabel value="e-mail: "/>
+                                <p:inputText value="#{gebruikerView.gebruiker.email}"/>
+                                <br/>
+                                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" columnClasses="label, value">
+                                    <p:outputLabel for="following" value="Following:" />
+                                    <p:selectManyMenu id="following" value="#{gebruikerView.gebruiker.following}" converter="#{gebruikerConverter}"
+                                        var="user" showCheckbox="true">
+                                        <f:selectItems value="#{gebruikerView.alleGebruikers}" var="user" itemLabel="#{user.voornaam}" itemValue="#{user}" />
+                                        <p:column>
+                                            <h:outputText value="#{user.username}" />
+                                        </p:column>
+                                    </p:selectManyMenu>
+                                    <p:outputLabel for="interesses" value="Interesses:" />
+                                    <p:selectManyMenu id="interesses" value="#{gebruikerView.gebruiker.interesses}" converter="#{interesseConverter}"
+                                        var="interesse" showCheckbox="true">
+                                        <f:selectItems value="#{interesseView.alleInteresses}" var="interesse" itemLabel="#{interesse.interesse}" itemValue="#{interesse}" />
+                                        <p:column>
+                                            <h:outputText value="#{interesse.interesse}" />
+                                        </p:column>
+                                    </p:selectManyMenu>
+                                </h:panelGrid>
+                                <p:commandButton
+                                    action="#{gebruikerView.maakNieuweGebruiker}"
+                                    value="voeg toe" />
+                            </h:form>
+                        </div>
+                    </f:view>
+                </p:tab>
+                <p:tab title="Journey toevoegen">
+                    <f:view>
+                        <div class="container">
+                            <h:form>
+                                <h:panelGrid>
+                                    <h:outputLabel value="Journey name: "/>
+                                    <h:inputText value="#{journeyView.journey.name}" />
+                                    <br/>
+                                    <h:outputLabel value="Geschreven door: "/>
+                                    <h:selectOneMenu value="#{journeyView.journey.maker}"  converter="#{gebruikerConverter}">
+                                        <f:selectItems value="#{gebruikerView.alleGebruikers}" var="user" itemValue="#{user}" itemLabel="#{user.voornaam}" />
+                                    </h:selectOneMenu>
+                                </h:panelGrid>
+                                <br/>
+                                <h:commandButton
+                                    action="#{journeyView.maakNieuweJourney}"
+                                    value="voeg toe" />
+                            </h:form>
+                        </div>
+                    </f:view>
+                </p:tab>
+                <p:tab title="Interesses toevoegen">
+                    <f:view>
+                        <div class="container">
+                            <h:form>
+                                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" columnClasses="label, value">
+                                    <p:outputLabel value="Interesse: "/>
+                                    <p:inputText value="#{interesseView.interesse.interesse}" />
+                                </h:panelGrid>
+                                <p:commandButton
+                                    action="#{interesseView.maakNieuweInteresse}"
+                                    value="voeg toe" />
+                            </h:form>
+                        </div>
+                    </f:view>
+                </p:tab>
+                <p:tab title="Journey rating toevoegen">
+                    <f:view>
+                        <h:panelGrid>
+                            <h:form>
+                                <p:outputLabel for="rater" value="Rated by: " />
+                                <p:selectOneMenu id="rater" value="#{journeyRatingView.journeyRating.rater}" style="width:125px" converter="#{gebruikerConverter}">
+                                    <f:selectItems value="#{gebruikerView.alleGebruikers}" var="user" itemValue="#{user}" itemLabel="#{user.username}" />
+                                </p:selectOneMenu>
+                                <br/>
+                                <p:outputLabel for="journey" value="For journey: " />
+                                <p:selectOneMenu id="journey" value="#{journeyRatingView.journeyRating.journey}" style="width:125px" converter="#{journeyConverter}">
+                                    <f:selectItems value="#{journeyView.alleJourneys}" var="journey" itemValue="#{journey}" itemLabel="#{journey.name}" />
+                                </p:selectOneMenu>
+                                <br/>
+                                <h:selectOneRadio value="#{journeyRatingView.journeyRating.score}">
+                                    <f:selectItem itemValue="0" itemLabel="0"/>
+                                    <f:selectItem itemValue="1" itemLabel="1"/>
+                                    <f:selectItem itemValue="2" itemLabel="2"/>
+                                    <f:selectItem itemValue="3" itemLabel="3"/>
+                                    <f:selectItem itemValue="4" itemLabel="4"/>
+                                    <f:selectItem itemValue="5" itemLabel="5"/>
+                                    <f:selectItem itemValue="6" itemLabel="6"/>
+                                    <f:selectItem itemValue="7" itemLabel="7"/>
+                                    <f:selectItem itemValue="8" itemLabel="8"/>
+                                    <f:selectItem itemValue="9" itemLabel="9"/>
+                                    <f:selectItem itemValue="10" itemLabel="10"/>
+                                </h:selectOneRadio>
+                                <br/>
+                                <h:commandButton
+                                    action="#{journeyRatingView.maakNieuweJourneyRating}"
+                                    value="voeg toe" />
+                                <input type="reset" value="Reset Form" />
+                            </h:form>
+                        </h:panelGrid>
+                    </f:view>
+                </p:tab>
+                <p:tab title="Locatie toevoegen">
+                    <f:view>
+                        <h:form>
+                            <h:outputLabel value="Locatie X-Coördinaat: "/>
+                            <h:inputText value="#{locatieView.locatie.xPos}" />
+                            <h:outputLabel value="Locatie Y-Coördinaat: "/>
+                            <h:inputText value="#{locatieView.locatie.yPos}" />
+                            <br/>    
+                            <h:outputLabel value="Naam Locatie: "/>
+                            <h:inputText value="#{locatieView.locatie.naam}" />
+                            <br/>
+                            <h:commandButton
+                                action="#{locatieView.maakNieuweLocatie}"
+                                value="Maak locatie aan" />
+                        </h:form>
+                    </f:view>
+                </p:tab>
+                <p:tab title="Todo toevoegen">
+                    <f:view>
+                        <h:form>
+                            <h:outputLabel value="Titel To-Do: "/>
+                            <h:inputText value="#{toDoView.toDo.title}"/>
+                            <br/>
+                            <h:outputLabel value="Beschrijving: "/>
+                            <h:inputText value="#{toDoView.toDo.description}"/>
+                            <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" columnClasses="label, value">
+                                <p:outputLabel for="interesses" value="Tags (Interesses):" />
+                                <p:selectManyMenu id="interesses" value="#{toDoView.toDo.tags}" converter="#{interesseConverter}"
+                                    var="interesse" showCheckbox="true">
+                                    <f:selectItems value="#{interesseView.alleInteresses}" var="interesse" itemLabel="#{interesse.interesse}" itemValue="#{interesse}" />
+                                    <p:column>
+                                        <h:outputText value="#{interesse.interesse}" />
+                                    </p:column>
+                                </p:selectManyMenu>
+                            </h:panelGrid>
+                            <h:outputLabel value="Op locatie: "/>
+                            <h:selectOneMenu value="#{toDoView.toDo.locatie}"  converter="#{locatieConverter}">
+                                <f:selectItems value="#{locatieView.alleLocaties}" var="locatie" itemValue="#{locatie}" itemLabel="#{locatie.naam}" />
+                            </h:selectOneMenu>
+                            <!--locatie toevoegen?-->
+                            <br/>
+                            <h:commandButton
+                                action="#{toDoView.maakNieuweToDo()}"
+                                value="Maak ToDo aan" />
+                        </h:form>
+                    </f:view>
+                </p:tab>
+                <p:tab title="Userrating toevoegen">
+                    <f:view>
+                        <div class="container">
+                            <h:form>
+                                <!-- rater -->
+                                <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="5">
+                                    <p:outputLabel for="rater" value="Rater:" />
+                                    <p:selectOneMenu id="rater" value="#{userRatingView.userRating.rater}" converter="#{gebruikerConverter}" >
+                                        <f:selectItems value="#{gebruikerView.alleGebruikers}" var="user" itemLabel="#{user.username}" itemValue="#{user}" />
+                                        <h:outputText value="#{user.username}" />
+                                    </p:selectOneMenu>
+                                    <!-- wordt gerate -->
+                                    <p:outputLabel for="gerate" value="Geeft een rating aan:" />
+                                    <p:selectOneMenu id="gerate" value="#{userRatingView.userRating.wordtGerate}" converter="#{gebruikerConverter}">
+                                        <f:selectItems value="#{gebruikerView.alleGebruikers}" var="user" itemLabel="#{user.username}" itemValue="#{user}" />
+                                        <h:outputText value="#{user.username}" />
+                                    </p:selectOneMenu>
+                                    <br/>
+                                    <p:outputLabel value="Rating:"/>
+                                    <p:inputText value="#{userRatingView.userRating.score}" />
+                                </h:panelGrid>
+                                <p:commandButton
+                                    action="#{userRatingView.maakNieuweUserRating}"
+                                    value="voeg toe" />
+                            </h:form>
+                        </div>
+                    </f:view>
+                </p:tab>
+                <!--
+                    <p:tab title="">
+                    </p:tab>
+                    <p:tab title="">
+                    </p:tab>
+                    <p:tab title="">
+                    </p:tab> -->
+            </p:tabView>
+        </f:view>
+    </h:body>
+</html>

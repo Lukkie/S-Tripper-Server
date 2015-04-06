@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"  
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Voeg Locatie Toe</title>
+        <style type="text/css">
+                .container {
+                    width: 300px;
+                    clear: both;
+                }
+                .container input {
+                    width: 100%;
+                    clear: both;
+                }
+            </style>
+    </h:head>
+    <h:body>
+        <div class="container">
+            <h:form>
+                <h:outputLabel value="Locatie X-Coördinaat: "/>
+                <h:inputText value="#{locatieView.locatie.xPos}" />
+                             
+                <h:outputLabel value="Locatie Y-Coördinaat: "/>
+                <h:inputText value="#{locatieView.locatie.yPos}" />
+                <br/>    
+                <h:outputLabel value="Naam Locatie: "/>
+                <h:inputText value="#{locatieView.locatie.naam}" />
+                <br/>
+                 <h:commandButton
+                    action="#{locatieView.maakNieuweLocatie}"
+                    value="Maak locatie aan" />
+                
+            </h:form>
+        </div>
+    </h:body>
+</html>

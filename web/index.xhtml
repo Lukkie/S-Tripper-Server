@@ -1,0 +1,623 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"  
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Social Tripper</title>
+        <style type="text/css">
+            .container {
+            clear: both;
+            width: 300px;
+            height:90vh;
+            }
+            .container input {
+            width: 80vh;
+            clear: both;           
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <f:view>
+            <p:growl id="msgs" showDetail="true" />
+            <p:tabView orientation="left"  >
+                
+                
+                
+                <p:tab  title="Gebruiker">
+                    <f:view>
+                        <div class="container">
+                            <h:panelGrid>
+                                <h:form>
+                                    <p:outputLabel value="Username: "/>
+                                    <p:inputText value="#{gebruikerView.gebruiker.username}" />
+                                    <br/>
+                                    <p:outputLabel value="Password: "/>
+                                    <p:password id="nonFeedback" value="#{gebruikerView.gebruiker.paswoord}" />
+                                    <br/>
+                                    <p:outputLabel value="First Name: "/>
+                                    <p:inputText value="#{gebruikerView.gebruiker.voornaam}"/>
+                                    <br/>
+                                    <p:outputLabel value="Last Name: "/>
+                                    <p:inputText value="#{gebruikerView.gebruiker.achternaam}"/>
+                                    <br/>
+                                    <p:outputLabel value="E-mail: "/>
+                                    <p:inputText value="#{gebruikerView.gebruiker.email}"/>
+                                    <br/>
+                                    <p:outputLabel value="Biografie: "/>
+                                    <p:inputText value="#{gebruikerView.gebruiker.biografie}"/>
+                                    <br/>
+                                    <h:panelGrid columns="2" style=" margin-bottom:10px" cellpadding="5" columnClasses="label, value">
+                                        <p:outputLabel for="following" value="Following:" />
+                                        <p:selectManyMenu id="following" value="#{gebruikerView.gebruiker.following}" converter="#{gebruikerConverter}">
+                                            var="user" showCheckbox="true">
+                                            <f:selectItems value="#{gebruikerView.alleGebruikers}" var="user" itemLabel="#{user.username}" itemValue="#{user}" />
+                                            <p:column>
+                                                <h:outputText value="#{user.username}" />
+                                            </p:column>
+                                        </p:selectManyMenu>
+                                        <p:outputLabel for="interesses" value="Interesses:" />
+                                        <p:selectManyMenu id="interesses" value="#{gebruikerView.gebruiker.interesses}" converter="#{interesseConverter}" >
+                                            var="interesse" showCheckbox="true">
+                                            <f:selectItems value="#{interesseView.alleInteresses}" var="interesse" itemLabel="#{interesse.interesse}" itemValue="#{interesse}" />
+                                            <p:column>
+                                                <h:outputText value="#{interesse.interesse}" />
+                                            </p:column>
+                                        </p:selectManyMenu>
+                                    </h:panelGrid>
+                                    <p:commandButton
+                                        action="#{gebruikerView.maakNieuweGebruiker}"
+                                        value="Voeg toe"
+                                        icon="ui-icon-plus"
+                                        />
+                                    <p:commandButton value="Toon gebruikers" oncomplete="PF('dlgGebruiker').show()" icon="ui-icon-newwin" />
+                                    <p:dialog header="Lijst van gebruikers -- (#{gebruikerView.aantalGebruikers} gebruikers)"  showEffect="fade" widgetVar="dlgGebruiker" resizable="false">
+                                        <p:dataTable id="displayGebruikers" var="user" value="#{gebruikerView.alleGebruikers}">
+                                            <p:column headerText="User ID">
+                                                <h:outputText value="#{user.id}" />
+                                            </p:column>
+                                            <p:column headerText="Voornaam">
+                                                <h:outputText value="#{user.voornaam}" />
+                                            </p:column>
+                                            <p:column headerText="Achternaam">
+                                                <h:outputText value="#{user.achternaam}" />
+                                            </p:column>
+                                            <p:column headerText="E-mail">
+                                                <h:outputText value="#{user.email}" />
+                                            </p:column>
+                                            <p:column headerText="Username">
+                                                <h:outputText value="#{user.username}" />
+                                            </p:column>
+                                            <p:column headerText="Paswoord">
+                                                <h:outputText value="#{user.paswoord}" />
+                                            </p:column>
+                                            <p:column headerText="Interesses">
+                                                <p:commandButton value="Interesses" oncomplete="PF('dlgGebruikerInteresse#{user.id}').show()"  />
+                                                <p:dialog header="Interesses van #{user.username}"  widgetVar="dlgGebruikerInteresse#{user.id}" position="bottom">
+                                                    <p:dataTable style="width:30vw" var="tag" value="#{user.interesses}">
+                                                        <p:column headerText="Interesse">
+                                                            <h:outputText value="#{tag.interesse}" />
+                                                        </p:column>
+                                                    </p:dataTable>
+                                                </p:dialog>
+                                            </p:column>
+                                            <p:column headerText="Following">
+                                                <p:commandButton value="Following" oncomplete="PF('dlgFollowing#{user.id}').show()"  />
+                                                <p:dialog header="#{user.username} volgt volgende personen" widgetVar="dlgFollowing#{user.id}" position="bottom">
+                                                    <p:dataTable style="width:30vw" var="gebr" value="#{user.following}">
+                                                        <p:column headerText="Following">
+                                                            <h:outputText value="#{gebr.username}" />
+                                                        </p:column>
+                                                    </p:dataTable>
+                                                </p:dialog>
+                                            </p:column>
+                                            <p:column headerText="Bio">
+                                                <p:commandButton icon="ui-icon-script" oncomplete="PF('dlgBIO#{user.id}').show()"/>
+                                                <p:dialog header="Biografie van #{user.username}"  widgetVar="dlgBIO#{user.id}" position="bottom">
+                                                    <h:outputText value="#{user.biografie}" />
+                                                </p:dialog>
+                                            </p:column>
+                                            <p:column headerText="Delete?">
+                                                <p:commandButton action="#{gebruikerView.verwijderGebruiker(user)}" icon="ui-icon-circle-close" />
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:dialog>
+                                </h:form>
+                            </h:panelGrid>
+                        </div>
+                    </f:view>
+                </p:tab>
+                
+                <p:tab title="Journey">
+                    <f:view>
+                        <div class="container">
+                            <h:panelGrid>
+                                <h:form>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Journey name: "/>
+                                        <p:inputText value="#{journeyView.journey.name}" />
+                                        <br/>
+                                        <p:outputLabel value="Geschreven door: "/>
+                                        <p:selectOneMenu value="#{journeyView.journey.maker}" style="width:125px" filter="true" filterMatchMode="contains" converter="#{gebruikerConverter}" id="displayGebruikers">
+                                            <f:selectItems value="#{gebruikerView.alleGebruikers}" var="user" itemValue="#{user}" itemLabel="#{user.username}" />
+                                        </p:selectOneMenu>
+                                    </h:panelGrid>
+                                    <br/>
+                                    <p:commandButton action="#{journeyView.maakNieuweJourney}"
+                                        value="Voeg toe" 
+                                        icon="ui-icon-plus" />
+                                    <p:commandButton value="Toon journeys" oncomplete="PF('dlgJourney').show()" icon="ui-icon-newwin" />
+                                    <p:dialog header="Lijst van journeys -- (#{journeyView.aantalJourneys} journeys)"  showEffect="fade" widgetVar="dlgJourney" resizable="false">
+                                        <p:dataTable var="journey" value="#{journeyView.alleJourneys}">
+                                            <p:column headerText="ID">
+                                                <h:outputText value="#{journey.id}" />
+                                            </p:column>
+                                            <p:column headerText="Naam">
+                                                <h:outputText value="#{journey.name}" />
+                                            </p:column>
+                                            <p:column headerText="Maker">
+                                                <h:outputText value="#{journey.maker.username}" />
+                                            </p:column>
+                                            <p:column headerText="Delete?">
+                                                <p:commandButton action="#{journeyView.verwijderJourney(journey)}" icon="ui-icon-circle-close" />
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:dialog>
+                                    <p:commandButton id="blockChartBtn" value="Journey scores" type="button" />
+                                    <p:overlayPanel for="blockChartBtn" hideEffect="fade">
+                                        <p:chart type="bar" model="#{journeyView.animatedModel}" style="width:400px;" />
+                                    </p:overlayPanel>
+                                </h:form>
+                            </h:panelGrid>
+                        </div>
+                    </f:view>
+                </p:tab>
+                
+                
+                
+                <p:tab title="Interesses">
+                    <f:view>
+                        <div class="container">
+                            <h:panelGrid>
+                                <h:form>
+                                    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" columnClasses="label, value">
+                                        <p:outputLabel value="Interesse: "/>
+                                        <p:inputText value="#{interesseView.interesse.interesse}" />
+                                    </h:panelGrid>
+                                    <p:commandButton
+                                        action="#{interesseView.maakNieuweInteresse}"
+                                        value="voeg toe"
+                                        icon="ui-icon-plus"/>
+                                    <p:commandButton value="Toon interesses" oncomplete="PF('dlgInteresse').show()" icon="ui-icon-newwin" />
+                                    <p:dialog header="Lijst van interesses -- (#{interesseView.aantalInteresses} interesses)"  showEffect="fade" widgetVar="dlgInteresse" resizable="false">
+                                        <p:dataTable var="interesse" value="#{interesseView.alleInteresses}">
+                                            <p:column headerText="ID">
+                                                <h:outputText value="#{interesse.id}" />
+                                            </p:column>
+                                            <p:column headerText="Naam">
+                                                <h:outputText value="#{interesse.interesse}" />
+                                            </p:column>
+                                            <p:column headerText="Delete?">
+                                                <p:commandButton action="#{interesseView.verwijderInteresse(interesse)}" icon="ui-icon-circle-close" />
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:dialog>
+                                
+                                    <p:commandButton id="pieChartBtn" value="Verdeling bij gebruikers" type="button" />
+                                    <p:overlayPanel id="imagePanel" for="pieChartBtn" hideEffect="fade">
+                                        <p:chart type="pie" model="#{interesseView.pieModel}" style="width:500px;height:400px" />
+                                    </p:overlayPanel>
+                                </h:form>
+                            </h:panelGrid>
+                        </div>
+                    </f:view>
+                </p:tab>
+                
+                
+                
+                <p:tab title="Journey rating">
+                    <f:view>
+                        <div class="container">
+                            <h:panelGrid>
+                                <h:form>
+                                    <p:outputLabel for="rater" value="Rated by: " />
+                                    <p:selectOneMenu id="rater" value="#{journeyRatingView.journeyRating.rater}" style="width:125px" filter="true" filterMatchMode="contains" converter="#{gebruikerConverter}">
+                                        <f:selectItems value="#{gebruikerView.alleGebruikers}" var="user" itemValue="#{user}" itemLabel="#{user.username}" />
+                                    </p:selectOneMenu>
+                                    <br/>
+                                    <p:outputLabel for="journey" value="For journey: " />
+                                    <p:selectOneMenu id="journey" value="#{journeyRatingView.journeyRating.journey}" style="width:125px" filter="true" filterMatchMode="contains" converter="#{journeyConverter}">
+                                        <f:selectItems value="#{journeyView.alleJourneys}" var="journey" itemValue="#{journey}" itemLabel="#{journey.name}" />
+                                    </p:selectOneMenu>
+                                    <br/>
+                                    <p:selectOneRadio value="#{journeyRatingView.journeyRating.score}">
+                                        <f:selectItem itemValue="0" itemLabel="0"/>
+                                        <f:selectItem itemValue="1" itemLabel="1"/>
+                                        <f:selectItem itemValue="2" itemLabel="2"/>
+                                        <f:selectItem itemValue="3" itemLabel="3"/>
+                                        <f:selectItem itemValue="4" itemLabel="4"/>
+                                        <f:selectItem itemValue="5" itemLabel="5"/>
+                                        <f:selectItem itemValue="6" itemLabel="6"/>
+                                        <f:selectItem itemValue="7" itemLabel="7"/>
+                                        <f:selectItem itemValue="8" itemLabel="8"/>
+                                        <f:selectItem itemValue="9" itemLabel="9"/>
+                                        <f:selectItem itemValue="10" itemLabel="10"/>
+                                    </p:selectOneRadio>
+                                    <br/>
+                                    <p:commandButton
+                                        action="#{journeyRatingView.maakNieuweJourneyRating}"
+                                        value="Voeg toe"
+                                        icon="ui-icon-plus"/>
+                                    <p:commandButton value="Toon journey ratings" oncomplete="PF('dlgJourneyRating').show()" icon="ui-icon-newwin" />
+                                    <p:dialog header="Lijst van journey ratings -- (#{journeyRatingView.aantalJourneyRatings} journey ratings)"  showEffect="fade" widgetVar="dlgJourneyRating" resizable="false">
+                                        <p:dataTable var="journeyRating" value="#{journeyRatingView.alleJourneyRatings}">
+                                            <p:column headerText="ID">
+                                                <h:outputText value="#{journeyRating.id}" />
+                                            </p:column>
+                                            <p:column headerText="Journey">
+                                                <h:outputText value="#{journeyRating.journey.name}" />
+                                            </p:column>
+                                            <p:column headerText="Gerate door">
+                                                <h:outputText value="#{journeyRating.rater.username}" />
+                                            </p:column>
+                                            <p:column headerText="Score">
+                                                <h:outputText value="#{journeyRating.score}" />
+                                            </p:column>
+                                            <p:column headerText="Delete?">
+                                                <p:commandButton action="#{journeyRatingView.verwijderJourneyRating(journeyRating)}" icon="ui-icon-circle-close" />
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:dialog>
+                                </h:form>
+                            </h:panelGrid>
+                        </div>
+                    </f:view>
+                </p:tab>
+                
+                
+                
+                <p:tab title="Journey review">
+                    <f:view>
+                        <div class="container">
+                            <h:panelGrid>
+                                <h:form>
+                                    <p:outputLabel for="rater" value="Rated by: " />
+                                    <p:selectOneMenu id="rater" value="#{reviewView.review.rater}" style="width:125px" filter="true" filterMatchMode="contains" converter="#{gebruikerConverter}">
+                                        <f:selectItems value="#{gebruikerView.alleGebruikers}" var="user" itemValue="#{user}" itemLabel="#{user.username}" />
+                                    </p:selectOneMenu>
+                                    <br/>
+                                    <p:outputLabel for="journey" value="For journey: " />
+                                    <p:selectOneMenu id="journey" value="#{reviewView.review.journey}" style="width:125px" filter="true" filterMatchMode="contains" converter="#{journeyConverter}">
+                                        <f:selectItems value="#{journeyView.alleJourneys}" var="journey" itemValue="#{journey}" itemLabel="#{journey.name}" />
+                                    </p:selectOneMenu>
+                                    <br/>
+                                    <p:selectOneRadio value="#{reviewView.review.score}">
+                                        <f:selectItem itemValue="0" itemLabel="0"/>
+                                        <f:selectItem itemValue="1" itemLabel="1"/>
+                                        <f:selectItem itemValue="2" itemLabel="2"/>
+                                        <f:selectItem itemValue="3" itemLabel="3"/>
+                                        <f:selectItem itemValue="4" itemLabel="4"/>
+                                        <f:selectItem itemValue="5" itemLabel="5"/>
+                                        <f:selectItem itemValue="6" itemLabel="6"/>
+                                        <f:selectItem itemValue="7" itemLabel="7"/>
+                                        <f:selectItem itemValue="8" itemLabel="8"/>
+                                        <f:selectItem itemValue="9" itemLabel="9"/>
+                                        <f:selectItem itemValue="10" itemLabel="10"/>
+                                    </p:selectOneRadio>
+                                    <p:outputLabel value="Review: "/>
+                                    <p:inputTextarea value="#{reviewView.review.reviewTekst}"/>
+                                    <br/>
+                                    <p:commandButton
+                                        action="#{reviewView.maakNieuweReview}"
+                                        value="Voeg toe"
+                                        icon="ui-icon-plus"/>
+                                    <p:commandButton value="Toon alle reviews" oncomplete="PF('dlgReview').show()" icon="ui-icon-newwin" />
+                                    <p:dialog header="Lijst van journey ratings -- (#{reviewView.aantalReviews} reviews)"  showEffect="fade" widgetVar="dlgReview" resizable="false">
+                                        <p:dataTable var="review" value="#{reviewView.alleReviews}">
+                                            <p:column headerText="ID">
+                                                <h:outputText value="#{review.id}" />
+                                            </p:column>
+                                            <p:column headerText="Journey">
+                                                <h:outputText value="#{review.journey.name}" />
+                                            </p:column>
+                                            <p:column headerText="Gerate door">
+                                                <h:outputText value="#{review.rater.username}" />
+                                            </p:column>
+                                            <p:column headerText="Score">
+                                                <h:outputText value="#{review.score}" />
+                                            </p:column>
+                                            <p:column headerText="Review">
+                                                <h:outputText value="#{review.reviewTekst}" />
+                                            </p:column>
+                                            <p:column headerText="Delete?">
+                                                <p:commandButton action="#{reviewView.verwijderReview(review)}" icon="ui-icon-circle-close" />
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:dialog>
+                                </h:form>
+                            </h:panelGrid>
+                        </div>
+                    </f:view>
+                </p:tab>
+                
+                
+                
+                <p:tab title="Todo">
+                    <f:view>
+                        <div class="container">
+                            <h:panelGrid>
+                                <h:form>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Titel To-Do: "/>
+                                        <p:inputText value="#{toDoView.toDo.title}"/>
+                                        <br/>
+                                        <p:outputLabel value="Beschrijving: "/>
+                                        <p:inputTextarea value="#{toDoView.toDo.description}"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" columnClasses="label, value">
+                                        <p:outputLabel for="interesses" value="Tags (Interesses):" />
+                                        <p:selectManyMenu id="interesses" value="#{toDoView.toDo.tags}" converter="#{interesseConverter}">
+                                            var="interesse" showCheckbox="true">
+                                            <f:selectItems value="#{interesseView.alleInteresses}" var="interesse" itemLabel="#{interesse.interesse}" itemValue="#{interesse}" />
+                                            <p:column>
+                                                <h:outputText value="#{interesse.interesse}" />
+                                            </p:column>
+                                        </p:selectManyMenu>
+                                    </h:panelGrid>
+                                    <p:outputLabel style="color:#ff0000" value="Op locatie: "/>
+                                    <br/>
+                                    <p:outputLabel value="Locatie X-Coördinaat: "/>
+                                    <p:inputText value="#{toDoView.locatie.XPos}" />
+                                    <br/> 
+                                    <p:outputLabel value="Locatie Y-Coördinaat: "/>
+                                    <p:inputText value="#{toDoView.locatie.YPos}" />
+                                    <br/>    
+                                    <p:outputLabel value="Naam Locatie: "/>
+                                    <p:inputText value="#{toDoView.locatie.naam}" />
+                                    <br/>
+                                    <br/>
+                                    <p:commandButton
+                                        action="#{toDoView.maakNieuweToDo()}"
+                                        value="Voeg toe" 
+                                        icon="ui-icon-plus" />
+                                    <p:commandButton value="Toon todo's" oncomplete="PF('dlgToDo').show()" icon="ui-icon-newwin" />
+                                    <p:dialog header="Lijst van todo's -- (#{toDoView.aantalToDos} todo's)"  showEffect="fade" widgetVar="dlgToDo" resizable="false">
+                                        <p:dataTable var="todo" value="#{toDoView.alleToDos}">
+                                            <p:column headerText="ID">
+                                                <h:outputText value="#{todo.id}" />
+                                            </p:column>
+                                            <p:column headerText="Titel">
+                                                <h:outputText value="#{todo.title}" />
+                                            </p:column>
+                                            <p:column headerText="Beschrijving">
+                                                <h:outputText value="#{todo.description}" />
+                                            </p:column>
+                                            <p:column headerText="Locatie naam">
+                                                <h:outputText value="#{todo.locatie.naam}" />
+                                            </p:column>
+                                            <p:column headerText="Locatie X">
+                                                <h:outputText value="#{todo.locatie.XPos}" />
+                                            </p:column>
+                                            <p:column headerText="Locatie Y">
+                                                <h:outputText value="#{todo.locatie.YPos}" />
+                                            </p:column>
+                                            <p:column headerText="View tags">
+                                                <p:commandButton value="Tags" oncomplete="PF('dlgTags#{todo.id}').show()"  />
+                                                <p:dialog header="Tags voor #{todo.title}"  widgetVar="dlgTags#{todo.id}" position="bottom">
+                                                    <p:dataTable var="tag" value="#{todo.tags}">
+                                                        <p:column headerText="Tag">
+                                                            <h:outputText value="#{tag.interesse}" />
+                                                        </p:column>
+                                                    </p:dataTable>
+                                                </p:dialog>
+                                            </p:column>
+                                            <p:column headerText="Delete?">
+                                                <p:commandButton action="#{toDoView.verwijderToDo(todo)}" icon="ui-icon-circle-close" />
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:dialog>
+                                </h:form>
+                            </h:panelGrid>
+                        </div>
+                    </f:view>
+                </p:tab>
+                
+                
+                
+                <p:tab title="Userrating">
+                    <f:view>
+                        <div class="container">
+                            <h:panelGrid>
+                                <h:form>
+                                    <!-- rater -->
+                                    <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="5">
+                                        <p:outputLabel for="rater" value="Rater:" />
+                                        <p:selectOneMenu id="rater" value="#{userRatingView.userRating.rater}" style="width:125px" filter="true" filterMatchMode="contains" converter="#{gebruikerConverter}" >
+                                            <f:selectItems value="#{gebruikerView.alleGebruikers}" var="user" itemLabel="#{user.username}" itemValue="#{user}" />
+                                            <h:outputText value="#{user.username}" />
+                                        </p:selectOneMenu>
+                                        <!-- wordt gerate -->
+                                        <p:outputLabel for="gerate" value="Geeft een rating aan:" />
+                                        <p:selectOneMenu id="gerate" value="#{userRatingView.userRating.wordtGerate}" style="width:125px" filter="true" filterMatchMode="contains" converter="#{gebruikerConverter}">
+                                            <f:selectItems value="#{gebruikerView.alleGebruikers}" var="user" itemLabel="#{user.username}" itemValue="#{user}" />
+                                            <h:outputText value="#{user.username}" />
+                                        </p:selectOneMenu>
+                                        <br/>
+                                        <p:outputLabel value="Rating:"/>
+                                        <p:selectOneRadio value="#{userRatingView.userRating.score}">
+                                            <f:selectItem itemValue="0" itemLabel="0"/>
+                                            <f:selectItem itemValue="1" itemLabel="1"/>
+                                            <f:selectItem itemValue="2" itemLabel="2"/>
+                                            <f:selectItem itemValue="3" itemLabel="3"/>
+                                            <f:selectItem itemValue="4" itemLabel="4"/>
+                                            <f:selectItem itemValue="5" itemLabel="5"/>
+                                            <f:selectItem itemValue="6" itemLabel="6"/>
+                                            <f:selectItem itemValue="7" itemLabel="7"/>
+                                            <f:selectItem itemValue="8" itemLabel="8"/>
+                                            <f:selectItem itemValue="9" itemLabel="9"/>
+                                            <f:selectItem itemValue="10" itemLabel="10"/>
+                                        </p:selectOneRadio>
+                                    </h:panelGrid>
+                                    <p:commandButton
+                                        action="#{userRatingView.maakNieuweUserRating}"
+                                        value="voeg toe"
+                                        icon="ui-icon-plus"/>
+                                    <p:commandButton value="Toon userratings" oncomplete="PF('dlgUserrating').show()" icon="ui-icon-newwin" />
+                                    <p:dialog header="Lijst van userratings -- (#{userRatingView.aantalUserRatings} userratings)"  showEffect="fade" widgetVar="dlgUserrating" resizable="false">
+                                        <p:dataTable var="userRating" value="#{userRatingView.alleUserRatings}">
+                                            <p:column headerText="Userrating ID">
+                                                <h:outputText value="#{userRating.id}" />
+                                            </p:column>
+                                            <p:column headerText="Door">
+                                                <h:outputText value="#{userRating.rater.username}" />
+                                            </p:column>
+                                            <p:column headerText="Aan">
+                                                <h:outputText value="#{userRating.wordtGerate.username}" />
+                                            </p:column>
+                                            <p:column headerText="Score">
+                                                <h:outputText value="#{userRating.score}" />
+                                            </p:column>
+                                            <p:column headerText="Delete?">
+                                                <p:commandButton action="#{userRatingView.verwijderUserRating(userRating)}" icon="ui-icon-circle-close" />
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:dialog>
+                                </h:form>
+                            </h:panelGrid>
+                        </div>
+                    </f:view>
+                </p:tab>
+                
+                
+                
+                <p:tab title="Tussenstop">
+                    <f:view>
+                        <div class="container">
+                            <h:panelGrid>
+                                <h:form>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Titel: "/>
+                                        <p:inputText value="#{tussenstopView.tussenstop.title}" />
+                                        <br/>
+                                        <p:outputLabel value="Tijdsduur (in gehele minuten): "/>
+                                        <p:inputText value="#{tussenstopView.tussenstop.tijdsduur}" />
+                                        <br/>
+                                        <p:outputLabel value="Korte beschrijving: "/>
+                                        <p:inputTextarea value="#{tussenstopView.tussenstop.beschrijving}" />
+                                        <br/>
+                                        <p:outputLabel value="To-do: "/>
+                                        <p:selectOneMenu value="#{tussenstopView.tussenstop.todo}" style="width:125px" converter="#{toDoConverter}" filter="true" filterMatchMode="contains">
+                                            <f:selectItems value="#{toDoView.alleToDos}" var="todo" itemValue="#{todo}" itemLabel="#{todo.title}" />
+                                        </p:selectOneMenu>
+                                        <p:outputLabel value="Gekoppeld aan journey: "/>
+                                        <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{tussenstopView.tussenstop.journey}" style="width:125px" converter="#{journeyConverter}">
+                                            <f:selectItems value="#{journeyView.alleJourneys}" var="journey" itemValue="#{journey}" itemLabel="#{journey.name}" />
+                                        </p:selectOneMenu>
+                                    </h:panelGrid>
+                                    <br/>
+                                    <p:commandButton
+                                        action="#{tussenstopView.maakNieuweTussenstop}"
+                                        value="voeg toe"
+                                        icon="ui-icon-plus"/>
+                                    <p:commandButton value="Toon tussenstops" oncomplete="PF('dlgTussenstop').show()" icon="ui-icon-newwin" />
+                                    <p:dialog header="Lijst van tussenstops -- (#{tussenstopView.aantalTussenstops} tussenstops)"  showEffect="fade" widgetVar="dlgTussenstop" resizable="false">
+                                        <p:dataTable var="tussenstop" value="#{tussenstopView.alleTussenstops}">
+                                            <p:column headerText="ID">
+                                                <h:outputText value="#{tussenstop.id}" />
+                                            </p:column>
+                                            <p:column headerText="Tijdsduur (minuten)">
+                                                <h:outputText value="#{tussenstop.tijdsduur}" />
+                                            </p:column>
+                                            <p:column headerText="Todo">
+                                                <h:outputText value="#{tussenstop.todo.title}" />
+                                            </p:column>
+                                            <p:column headerText="Journey">
+                                                <h:outputText value="#{tussenstop.journey.name}" />
+                                            </p:column>
+                                            <p:column headerText="Beschrijving">
+                                                <h:outputText value="#{tussenstop.beschrijving}" />
+                                            </p:column>
+                                            <p:column headerText="Delete?">
+                                                <p:commandButton action="#{tussenstopView.verwijderTussenstop(tussenstop)}" icon="ui-icon-circle-close" />
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:dialog>
+                                </h:form>
+                            </h:panelGrid>
+                        </div>
+                    </f:view>
+                </p:tab>
+                
+                <p:tab title="Upload Foto">
+                    <br />
+                    <h:form enctype="multipart/form-data">
+                        <p:messages showDetail="true" />
+                        <p:fileUpload value="#{fotoStoreBean.file}" mode="simple" />
+                        <p:commandButton value="Submit" ajax="false" actionListener="#{fotoStoreBean.storeImage}" />
+                        <p:graphicImage id="image" alt="uploaded image" url="/image"/>
+                    </h:form>
+                </p:tab>
+                 
+                <p:tab title="Toon Foto's">
+                      
+                <form method = "get" action="/Project_1/image/" > 
+                    <input  name="id" type="text"> Id</input>
+                        <br/>
+                       <input type="submit" value="submit" onclick="PF('imageDialog').show();"/>
+                </form> 
+                    <p:dialog header="Image Dialog" widgetVar="imageDialog" >
+                    <h:graphicImage id="image" alt="image on id" url="/Project_1/image/" /> 
+                    </p:dialog>
+                </p:tab>
+                
+                
+                <!-- <p:tab title="Bio User">
+                    <h:panelGrid>
+                        <h:form>
+                            <p:outputLabel value="Gebruiker: " />
+                            <p:selectOneMenu value="#{bioUserView.bioUser.gebruiker}" style="width:175px" filter="true" filterMatchMode="contains" converter="#{gebruikerConverter}" id="displayGebruikers">
+                                <f:selectItems value="#{gebruikerView.alleGebruikers}" var="user" itemValue="#{user}" itemLabel="#{user.username}" />
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Beschrijving van de gebruiker: " />
+                            <p:inputTextarea value="#{bioUserView.bioUser.bio}" />
+                            <br/>
+                            <p:commandButton action="#{bioUserView.maakNieuweBioUser}" value="Voeg toe" icon="ui-icon-plus" />
+                            <p:commandButton value="Toon gebruikers" oncomplete="PF('dlgBioUser').show()" icon="ui-icon-newwin" />
+                            <p:dialog header="Lijst van User Bio's - (#{bioUserView.aantalBios})" showEffect="fade" widgetVar="dlgBioUser" resizable="false">
+                                <p:dataTable id="displayBioUser" var="bioUser" value="#{bioUserView.alleBios}">
+                                    <p:column headerText="Username">
+                                        <h:outputText value="#{bioUser.user.username}" />
+                                    </p:column>
+                                    <p:column headerText="Beschrijving">
+                                        <h:outputText value="#{bioUser.bio}" />
+                                    </p:column>
+                                    <p:column headerText="Delete?">
+                                        <p:commandButton action="#{bioUserView.verwijderBioUser(bioUser)}" icon="ui-icon-circle-close" />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:dialog>
+                        </h:form>                       
+                    </h:panelGrid>
+                </p:tab> -->
+                
+ 
+                
+                
+                <!-- extra tabs toevoegen
+                    <p:tab title="">
+                
+                
+                    </p:tab>
+                    <p:tab title="">
+                    </p:tab>
+                    <p:tab title="">
+                    </p:tab> -->
+                
+                
+                
+            </p:tabView>
+        </f:view>
+    </h:body>
+</html>
